@@ -1,13 +1,14 @@
 package com.rx302;
 
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerRX302 extends UDPInterface implements Runnable {
 	private AtomicBoolean running;
 
-	public ServerRX302(){
+	public ServerRX302() throws SocketException {
 		super(8008);
 		running=new AtomicBoolean(false);
 		System.out.println("Opened server on port "+UDP_PORT);
@@ -32,14 +33,19 @@ public class ServerRX302 extends UDPInterface implements Runnable {
 			int senderPort=getSenderPort();
 			System.out.println("Found a new Client with a following address : "+senderAddress+":"+senderPort);
 			System.out.println("Creating a new communication with the client...");
-			Communication communication =new Communication(senderAddress,senderPort);
+			Communication communication = null;
+			try {
+				communication = new Communication(senderAddress,senderPort);
+			} catch (SocketException e) {
+				e.printStackTrace();
+			}
 			new Thread(communication).start();
 			System.out.println("Communication created between the server and the client at "+senderAddress+":"+senderPort);
 		}
 		close();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SocketException {
 		ServerRX302 serverRX302 = new ServerRX302();
 		serverRX302.run();
 	}

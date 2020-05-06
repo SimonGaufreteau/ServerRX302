@@ -1,10 +1,11 @@
 package com.rx302;
 
+import java.net.SocketException;
 import java.util.Date;
 import java.util.Scanner;
 
 public class Client extends UDPInterface implements Runnable{
-	public Client(){
+	public Client() throws SocketException {
 		super();
 	}
 
@@ -28,7 +29,7 @@ public class Client extends UDPInterface implements Runnable{
 		System.out.println("Client disconnected successfully !");
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SocketException {
 		Client client = new Client();
 		client.run();
 	}

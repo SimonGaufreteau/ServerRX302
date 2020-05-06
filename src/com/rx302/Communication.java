@@ -1,10 +1,11 @@
 package com.rx302;
 
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Date;
 
 public class Communication extends UDPInterface implements Runnable {
-	public Communication(InetAddress clientAddress, int clientPort){
+	public Communication(InetAddress clientAddress, int clientPort) throws SocketException {
 		super();
 		send(SERVER_RUNNING,clientAddress,clientPort);
 	}
