@@ -3,6 +3,8 @@ package com.rx302;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerRX302 extends UDPInterface implements Runnable {
@@ -18,13 +20,16 @@ public class ServerRX302 extends UDPInterface implements Runnable {
 	public void run() {
 		running.set(true);
 		while (running.get()){
+			String message;
 			do{
 				receive();
-			} while(!getMessageFromBuffer().equals(CONNECT_MESSAGE) && !getMessageFromBuffer().equals(DISCONNECT_SERVER));
+				Date date = new Date(System.currentTimeMillis());
+				message = getMessageFromBuffer();
+				System.out.println(String.format(MESSAGE_RECEIVED,getSenderAddress(),getSenderPort(),date,message));
+			} while(!message.equals(CONNECT_MESSAGE) && !message.equals(DISCONNECT_SERVER));
 
 			if(getMessageFromBuffer().equals(DISCONNECT_SERVER)){
 				System.out.println("Disconnecting the server...");
-
 				running.set(false);
 				break;
 			}
@@ -33,13 +38,11 @@ public class ServerRX302 extends UDPInterface implements Runnable {
 			int senderPort=getSenderPort();
 			System.out.println("Found a new Client with a following address : "+senderAddress+":"+senderPort);
 			System.out.println("Creating a new communication with the client...");
-			Communication communication = null;
 			try {
-				communication = new Communication(senderAddress,senderPort);
+				new Thread( new Communication(senderAddress,senderPort)).start();
 			} catch (SocketException e) {
 				e.printStackTrace();
 			}
-			new Thread(communication).start();
 			System.out.println("Communication created between the server and the client at "+senderAddress+":"+senderPort);
 		}
 		close();

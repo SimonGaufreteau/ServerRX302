@@ -2,6 +2,7 @@ package com.rx302;
 
 import java.io.IOException;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 public class UDPInterface {
 	protected static final int UDP_PORT = 8008;
@@ -15,7 +16,7 @@ public class UDPInterface {
 	protected static InetAddress serverAddress;
 	static {
 		try {
-			serverAddress = InetAddress.getLocalHost();
+			serverAddress = InetAddress.getByName("localhost");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -27,6 +28,7 @@ public class UDPInterface {
 
 	public static final int MIN_PORT=1024;
 	public static final int MAX_PORT=4096;
+	public static final int MAX_MESSAGE_LENGTH=1024;
 
 	public UDPInterface() throws SocketException {
 		this(getFirstAvailablePort());
@@ -34,9 +36,12 @@ public class UDPInterface {
 
 	public UDPInterface(int port) throws SocketException {
 		socket = new DatagramSocket(port);
+		buffer= new byte[MAX_MESSAGE_LENGTH];
+		datagramPacket=new DatagramPacket(buffer,buffer.length);
 	}
 
 	public void send(String message, InetAddress destination,int port){
+		buffer=new byte[message.length()];
 		buffer = message.getBytes();
 		datagramPacket = new DatagramPacket(buffer,buffer.length,destination,port);
 		try {
@@ -48,12 +53,15 @@ public class UDPInterface {
 	}
 
 	public void receive(){
+		buffer= new byte[MAX_MESSAGE_LENGTH];
+		datagramPacket=new DatagramPacket(buffer,buffer.length);
 		try {
 			socket.receive(datagramPacket);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		buffer=datagramPacket.getData();
+
 	}
 
 	public void close(){
@@ -61,7 +69,7 @@ public class UDPInterface {
 	}
 
 	public String getMessageFromBuffer(){
-		return new String(buffer);
+		return new String(buffer).trim();
 	}
 
 	public InetAddress getSenderAddress(){
@@ -73,12 +81,14 @@ public class UDPInterface {
 	}
 
 	public static int getFirstAvailablePort(int min,int max) throws SocketException {
+		DatagramSocket datagramSocket;
 		for(int i=min;i<max;i++){
 			try{
-				new DatagramSocket(i);
+				datagramSocket = new DatagramSocket(i);
 			}catch (SocketException ex){
 				continue;
 			}
+			datagramSocket.close();
 			return i;
 		}
 		throw new SocketException("Impossible to find an available port between "+min+" and "+max+".");

@@ -17,10 +17,18 @@ public class Communication extends UDPInterface implements Runnable {
 			receive();
 			Date date = new Date(System.currentTimeMillis());
 			message = getMessageFromBuffer();
+			if(message.equals(DISCONNECT_SERVER))
+				send("Disconnecting the server...",getSenderAddress(),getSenderPort());
+			else{
+				send(SERVER_RESPONSE,getSenderAddress(),getSenderPort());
+			}
 			System.out.println(String.format(MESSAGE_RECEIVED,getSenderAddress(),getSenderPort(),date,message));
-			send(SERVER_RESPONSE,getSenderAddress(),getSenderPort());
-		}while (!message.equals(DISCONNECT_CLIENT));
-		send("Closing the connection with the server...",getSenderAddress(),getSenderPort());
+		}while (!message.equals(DISCONNECT_CLIENT) && !message.equals(DISCONNECT_SERVER));
+		if(message.equals(DISCONNECT_CLIENT))
+			send("Closing the connection between "+getSenderAddress()+":"+getSenderPort()+" and the server",getSenderAddress(),UDP_PORT);
+		else {
+			send(DISCONNECT_SERVER,getSenderAddress(),UDP_PORT);
+		}
 		close();
 	}
 }
