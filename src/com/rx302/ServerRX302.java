@@ -1,7 +1,7 @@
 package com.rx302;
 
-import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerRX302 extends UDPInterface implements Runnable {
@@ -19,9 +19,11 @@ public class ServerRX302 extends UDPInterface implements Runnable {
 		while (running.get()){
 			do{
 				receive();
-			} while(!getMessageFromBuffer().equals(CONNECT_MESSAGE) && !getMessageFromBuffer().equals(DISCONNECT_MESSAGE));
+			} while(!getMessageFromBuffer().equals(CONNECT_MESSAGE) && !getMessageFromBuffer().equals(DISCONNECT_SERVER));
 
-			if(getMessageFromBuffer().equals(DISCONNECT_MESSAGE)){
+			if(getMessageFromBuffer().equals(DISCONNECT_SERVER)){
+				System.out.println("Disconnecting the server...");
+
 				running.set(false);
 				break;
 			}

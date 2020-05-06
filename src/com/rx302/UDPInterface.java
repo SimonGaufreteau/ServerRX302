@@ -1,19 +1,31 @@
 package com.rx302;
 
-import javax.xml.crypto.Data;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class UDPInterface {
 	protected static final int UDP_PORT = 8008;
 	protected static final String SERVER_RUNNING = "server RX302 ready";
 	protected static final String CONNECT_MESSAGE = "hello server RX302";
-	protected static final String DISCONNECT_MESSAGE = "stop server RX302";
+	protected static final String DISCONNECT_SERVER = "stop server RX302";
+	protected static final String DISCONNECT_CLIENT = "stop client";
+	protected static final String SERVER_RESPONSE = "Your message has been received by the server.";
+	protected static final String MESSAGE_RECEIVED ="Message received by %s:%d at %s : %s";
+
 
 	private DatagramSocket socket;
 	private DatagramPacket datagramPacket;
-	private InetAddress address;
+	protected static InetAddress serverAddress;
+
+	static {
+		try {
+			serverAddress = InetAddress.getByName("localhost");
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static final int MIN_PORT=1024;
 	public static final int MAX_PORT=4096;
