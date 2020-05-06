@@ -4,6 +4,9 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Date;
 
+/**
+ * A classe representing the communication between the server and a Client. The connection will be close once the "stop client" command or "stop server RX302" is sent by the client.
+ */
 public class Communication extends UDPInterface implements Runnable {
 	public Communication(InetAddress clientAddress, int clientPort) throws SocketException {
 		super();

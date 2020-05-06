@@ -2,11 +2,12 @@ package com.rx302;
 
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * A simple UDP server creating a new Thread for every new Client. Note : no client management is done.
+ */
 public class ServerRX302 extends UDPInterface implements Runnable {
 	private AtomicBoolean running;
 

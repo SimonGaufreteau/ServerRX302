@@ -1,10 +1,12 @@
 package com.rx302;
 
-import javax.swing.*;
 import java.net.SocketException;
 import java.util.Date;
 import java.util.Scanner;
 
+/**
+ * A runnable class representing a Client connected via UDP to a server on localhost.
+ */
 public class Client extends UDPInterface implements Runnable{
 	public Client() throws SocketException {
 		super();
