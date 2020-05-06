@@ -4,8 +4,11 @@ An UDP server in Java
 ## How to use it
 
 Build the project.
+
 Start the RX302 server.
+
 Start one or multiple instances of the Client class in cmd.
+
 Enjoy.
 
 ## Contact
